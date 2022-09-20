@@ -2,13 +2,32 @@ import React, { useState } from "react";
 import Card from "../UI/Card";
 import ExpensesFilter from "./ExpenseFilter";
 import ExpenseItem from "./ExpenseItem";
+import ExpensesList from "./ExpensesList";
+import ExpenseChart from "./ExpensesChart";
 import "./Expenses.css";
 function Expenses({ arr }) {
   const [filterYear, setFilterYear] = useState("2020");
 
   function filterChangeHandler(selectedYear) {
-    console.log("Expenses.jsx");
+    // console.log("Expenses.jsx");
     setFilterYear(selectedYear);
+  }
+
+  const filterExpense = arr.filter((expense) => {
+    return expense.date.getFullYear().toString() === filterYear;
+  });
+
+  let expenseContent = <p>No expense found</p>;
+
+  if (filterExpense.length > 0) {
+    expenseContent = filterExpense.map((expense) => (
+      <ExpenseItem
+        key={expense.id}
+        title={expense.title}
+        amount={expense.amount}
+        date={expense.date}
+      />
+    ));
   }
 
   return (
@@ -18,26 +37,8 @@ function Expenses({ arr }) {
           selected={filterYear}
           onChangeFilter={filterChangeHandler}
         />
-        <ExpenseItem
-          title={arr[0].title}
-          amount={arr[0].amount}
-          date={arr[0].date}
-        />
-        <ExpenseItem
-          title={arr[1].title}
-          amount={arr[1].amount}
-          date={arr[1].date}
-        />
-        <ExpenseItem
-          title={arr[2].title}
-          amount={arr[2].amount}
-          date={arr[2].date}
-        />
-        <ExpenseItem
-          title={arr[3].title}
-          amount={arr[3].amount}
-          date={arr[3].date}
-        />
+        <ExpenseChart expenses={filterExpense} />
+        <ExpensesList items={filterExpense} />
       </Card>
     </div>
   );
